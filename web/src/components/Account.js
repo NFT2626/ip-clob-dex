@@ -3,6 +3,7 @@ import React from 'react';
 import { Button } from 'react-bootstrap';
 import { ethers } from "ethers";
 import Web3Modal from "web3modal";
+import WalletConnectProvider from "@walletconnect/web3-provider";
 
 function Account({provider, setProvider}) {
     const [account, setAccount] = React.useState("");
@@ -16,16 +17,20 @@ function Account({provider, setProvider}) {
     }, []);
 
     const onConnect = async () => {
-        const providerOptions = {
-            /* See Provider Options Section */
-        };
-
+    
         const web3Modal = new Web3Modal({
-            network: "mainnet", // optional
-            cacheProvider: true, // optional
-            providerOptions // required
+            network: "mainnet",
+            cacheProvider: true,
+            providerOptions: {
+                walletconnect: {
+                    package: WalletConnectProvider,
+                    options: {
+                        infuraId: process.env.REACT_APP_INFURA_ID,
+                    },
+                },
+            },
         });
-        
+            
         const instance = await web3Modal.connect();
         
         const p = new ethers.providers.Web3Provider(instance);
